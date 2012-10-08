@@ -15,8 +15,7 @@ linux {
 }
 
 windows {
-  debug:LIBS += ../TT_Apid.lib
-  else:LIBS += ../TT_Api.lib
+  LIBS += ../TT_Api.lib
 }
 
 # Input

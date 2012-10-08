@@ -50,21 +50,21 @@ private:
 
     Ui::ScreenColorsDialog uiScreenColors;
     
-    ImageScrollArea* scrollArea;
-    QLabel* zoomLabel;
-    QLabel* operatorLabel;
-    QLabel* conversionTimeLabel;
-    QLabel* displayTimeLabel;
+    ImageScrollArea* m_scrollArea;
+    QLabel* m_zoomLabel;
+    QLabel* m_operatorLabel;
+    QLabel* m_conversionTimeLabel;
+    QLabel* m_displayTimeLabel;
     
-    HdrImage* inputImage; 
-    HdrImage* outputImage; 
-	int* pixmapBuffer;
-    float xyzToRgbMatrix[3][3];
-    float gamma;
-    bool gammaEnabled;
-    bool operatorEnabled;
-    ImageLoaderManager &loaderManager;
-    ToneMappingOperatorManager &operatorManager;
+    HdrImage* m_inputImage; 
+    HdrImage* m_outputImage; 
+	int* m_pixmapBuffer;
+    float m_xyzToRgbMatrix[3][3];
+    float m_gamma;
+    bool m_gammaEnabled;
+    bool m_operatorEnabled;
+    ImageLoaderManager &m_loaderManager;
+    ToneMappingOperatorManager &m_operatorManager;
 };
 
 #endif

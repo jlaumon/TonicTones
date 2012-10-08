@@ -91,40 +91,40 @@
  */
 TonicTones::TonicTones(QWidget *parent) : 
     QMainWindow(parent),
-    inputImage(NULL),
-    outputImage(NULL),
-	pixmapBuffer(NULL),
-    gamma(1.0),
-    gammaEnabled(true),
-    operatorEnabled(true),
-    loaderManager(*ImageLoaderManager::instance()),
-    operatorManager(*ToneMappingOperatorManager::instance())
+    m_inputImage(NULL),
+    m_outputImage(NULL),
+	m_pixmapBuffer(NULL),
+    m_gamma(1.0),
+    m_gammaEnabled(true),
+    m_operatorEnabled(true),
+    m_loaderManager(*ImageLoaderManager::instance()),
+    m_operatorManager(*ToneMappingOperatorManager::instance())
 {
-    xyzToRgbMatrix[0][0]= 2.5651; xyzToRgbMatrix[0][1]=-1.1665; xyzToRgbMatrix[0][2]=-0.3986;
-	xyzToRgbMatrix[1][0]=-1.0217; xyzToRgbMatrix[1][1]= 1.9777; xyzToRgbMatrix[1][2]= 0.0439;
-	xyzToRgbMatrix[2][0]= 0.0753; xyzToRgbMatrix[2][1]=-0.2543; xyzToRgbMatrix[2][2]= 1.1892;
+    m_xyzToRgbMatrix[0][0]= 2.5651f; m_xyzToRgbMatrix[0][1]=-1.1665f; m_xyzToRgbMatrix[0][2]=-0.3986f;
+	m_xyzToRgbMatrix[1][0]=-1.0217f; m_xyzToRgbMatrix[1][1]= 1.9777f; m_xyzToRgbMatrix[1][2]= 0.0439f;
+	m_xyzToRgbMatrix[2][0]= 0.0753f; m_xyzToRgbMatrix[2][1]=-0.2543f; m_xyzToRgbMatrix[2][2]= 1.1892f;
     
     setupUi(this);
     
-    scrollArea = new ImageScrollArea;
-    displayAreaLayout->addWidget(scrollArea);
+    m_scrollArea = new ImageScrollArea;
+    displayAreaLayout->addWidget(m_scrollArea);
     
-    zoomLabel = new QLabel;
-    statusbar->addPermanentWidget(zoomLabel, 1);
+    m_zoomLabel = new QLabel;
+    statusbar->addPermanentWidget(m_zoomLabel, 1);
     
-    operatorLabel = new QLabel;
-    statusbar->addPermanentWidget(operatorLabel, 2);
+    m_operatorLabel = new QLabel;
+    statusbar->addPermanentWidget(m_operatorLabel, 2);
     
-    conversionTimeLabel = new QLabel;
-    statusbar->addPermanentWidget(conversionTimeLabel, 1);
+    m_conversionTimeLabel = new QLabel;
+    statusbar->addPermanentWidget(m_conversionTimeLabel, 1);
     
-    displayTimeLabel = new QLabel;
-    statusbar->addPermanentWidget(displayTimeLabel, 1);
+    m_displayTimeLabel = new QLabel;
+    statusbar->addPermanentWidget(m_displayTimeLabel, 1);
 
     
     connect(operatorComboBox, SIGNAL(currentIndexChanged(const QString&)), 
             this, SLOT(updateOperator(const QString&)));
-    connect(scrollArea, SIGNAL(scaleChanged(double)), this, SLOT(updateZoom(double)));
+    connect(m_scrollArea, SIGNAL(scaleChanged(double)), this, SLOT(updateZoom(double)));
     connect(actionOpen, SIGNAL(triggered()), this, SLOT(open()));
     connect(actionScreenColors, SIGNAL(triggered()), this, SLOT(openScreenColorsDialog()));
     connect(operatorGroupBox, SIGNAL(toggled(bool)), this, SLOT(enableOperator(bool)));
@@ -132,17 +132,17 @@ TonicTones::TonicTones(QWidget *parent) :
     connect(gammaSlider, SIGNAL(sliderReleased()), this, SLOT(displayImage()));
     connect(gammaSlider, SIGNAL(valueChanged(int)), this, SLOT(updateGamma(int)));
 
-    loaderManager.registerLoaders("Loaders");
+    m_loaderManager.registerLoaders("Loaders");
     
-    QStringList operatorList = operatorManager.registerOperators("Operators");
+    QStringList operatorList = m_operatorManager.registerOperators("Operators");
     operatorComboBox->addItems(operatorList);
     
     
-    if (loaderManager.empty())
+    if (m_loaderManager.empty())
     {
         qFatal("No image loader found! TonicTones will not be able to open images! Exiting now.");
     }
-    if (operatorManager.empty())
+    if (m_operatorManager.empty())
     {
         qWarning("No tone mapping operator found. Satisfaction not guaranteed.");
         operatorGroupBox->hide();
@@ -162,25 +162,25 @@ void TonicTones::open()
         if (!fileName.isEmpty())
         {
             HdrImage* newImage = new HdrImage(fileName); // may throw an exception
-            delete inputImage;
-            inputImage = newImage;
+            delete m_inputImage;
+            m_inputImage = newImage;
 
-			delete pixmapBuffer;
-			pixmapBuffer = new int[inputImage->size().width() * inputImage->size().height()];
+			delete m_pixmapBuffer;
+			m_pixmapBuffer = new int[m_inputImage->size().width() * m_inputImage->size().height()];
             
-            if(operatorManager.getActiveOperator())
+            if(m_operatorManager.getActiveOperator())
             {
-                operatorManager.getActiveOperator()->setImage(inputImage);
+                m_operatorManager.getActiveOperator()->setImage(m_inputImage);
             }
             else
             {
-                operatorEnabled = false;
+                m_operatorEnabled = false;
                 updateImage();
             }
             
             setWindowTitle(QString("TonicTones - %1").arg(QDir(fileName).dirName()));
                 
-            scrollArea->scaleImage(1.0, false); // set zoom 100%
+            m_scrollArea->scaleImage(1.0, false); // set zoom 100%
         }
     }
     catch(const Exception& e)
@@ -197,25 +197,25 @@ void TonicTones::open()
 void TonicTones::updateImage()
 {
     const HdrImage* image;
-    if(operatorEnabled)
-        image = operatorManager.getActiveOperator()->getToneMappedImage();
+    if(m_operatorEnabled)
+        image = m_operatorManager.getActiveOperator()->getToneMappedImage();
     else
-        image = inputImage;
+        image = m_inputImage;
     if (image)
     {
         QTime t;
         t.start();
         
-        delete outputImage;
+        delete m_outputImage;
         try
         {    
-            outputImage = image->toRgb(xyzToRgbMatrix);
+            m_outputImage = image->toRgb(m_xyzToRgbMatrix);
         }
         catch(const Exception& e)
         {
             qWarning() << e.what();
         }
-        conversionTimeLabel->setText(tr("Transformation to RGB: %1 ms").arg(t.elapsed()));
+        m_conversionTimeLabel->setText(tr("Transformation to RGB: %1 ms").arg(t.elapsed()));
         displayImage();
     }
 }
@@ -225,23 +225,23 @@ void TonicTones::updateImage()
  */
 void TonicTones::displayImage() const
 {
-    if (outputImage)
+    if (m_outputImage)
     {
         QTime t;
         t.start();
         
-        QSize size = outputImage->size();
+        QSize size = m_outputImage->size();
         int width = size.width();
         int height = size.height();
         
-        if(gammaEnabled && gamma!=1.0)
+        if(m_gammaEnabled && m_gamma!=1.0)
         {
-            double gamma_corr = 1.0/gamma;
+            double gamma_corr = 1.0/m_gamma;
             for(int i=0; i<height; ++i)
                 for(int j=0; j<width; ++j)
                 {
-                    Color p = (*outputImage)[i][j].clamp();
-                    pixmapBuffer[i*width+j] = qRgb(pow((double)p[0],gamma_corr)*255.0,pow((double)p[1],gamma_corr)*255.0,pow((double)p[2],gamma_corr)*255.0);
+                    Color p = (*m_outputImage)[i][j].clamp();
+                    m_pixmapBuffer[i*width+j] = qRgb(pow((double)p[0],gamma_corr)*255.0,pow((double)p[1],gamma_corr)*255.0,pow((double)p[2],gamma_corr)*255.0);
                 }
         }
         else
@@ -249,14 +249,14 @@ void TonicTones::displayImage() const
             for(int i=0; i<height; ++i)
                 for(int j=0; j<width; ++j)
                 {
-                    Color p = (*outputImage)[i][j].clamp();
-                    pixmapBuffer[i*width+j] = qRgb(p[0]*255.0,p[1]*255.0,p[2]*255.0);
+                    Color p = (*m_outputImage)[i][j].clamp();
+                    m_pixmapBuffer[i*width+j] = qRgb(p[0]*255.0,p[1]*255.0,p[2]*255.0);
                 }
         }
-        QImage ldrImage((uchar*)pixmapBuffer, width, height, QImage::Format_RGB32);
+        QImage ldrImage((uchar*)m_pixmapBuffer, width, height, QImage::Format_RGB32);
 
-        scrollArea->image()->setPixmap(QPixmap::fromImage(ldrImage));
-        displayTimeLabel->setText(tr("Display: %1 ms").arg(t.elapsed()));
+        m_scrollArea->image()->setPixmap(QPixmap::fromImage(ldrImage));
+        m_displayTimeLabel->setText(tr("Display: %1 ms").arg(t.elapsed()));
     }
 }
 
@@ -265,7 +265,7 @@ void TonicTones::displayImage() const
  */
 void TonicTones::updateZoom(double scaleFactor)
 {
-    zoomLabel->setText(tr("Zoom: %1 %").arg(scaleFactor*100, 0, 'f', 0));
+    m_zoomLabel->setText(tr("Zoom: %1 %").arg(scaleFactor*100, 0, 'f', 0));
 }
 
 /**
@@ -276,7 +276,7 @@ void TonicTones::updateOperator(const QString& operatorName)
     qDebug("%s selected.", operatorName.toStdString().c_str());
 
     // set new operator
-    operatorManager.setActiveOperator(operatorName);
+    m_operatorManager.setActiveOperator(operatorName);
     
     // remove previous operator ui
     QLayoutItem* item = operatorOptionsGroupBox->layout()->itemAt(0);
@@ -288,26 +288,26 @@ void TonicTones::updateOperator(const QString& operatorName)
     QWidget *wrapper = new QWidget;
     wrapper->setAttribute(Qt::WA_DeleteOnClose);
     operatorOptionsGroupBox->layout()->addWidget(wrapper);
-    operatorManager.getActiveOperator()->setupUi(wrapper);
+    m_operatorManager.getActiveOperator()->setupUi(wrapper);
 
-    connect(operatorManager.getActiveOperator().data(),SIGNAL(imageUpdated()),
+    connect(m_operatorManager.getActiveOperator().data(),SIGNAL(imageUpdated()),
             this, SLOT(updateImage()));
-    connect(operatorManager.getActiveOperator().data(),SIGNAL(message(const QString&)),
-            operatorLabel, SLOT(setText(const QString&)));
+    connect(m_operatorManager.getActiveOperator().data(),SIGNAL(message(const QString&)),
+            m_operatorLabel, SLOT(setText(const QString&)));
     // if an image is already loaded, send it to the new operator
-    if (inputImage)
+    if (m_inputImage)
     {
-        operatorManager.getActiveOperator()->setImage(inputImage);
+        m_operatorManager.getActiveOperator()->setImage(m_inputImage);
     }
 }
 
 /**
- * Updates the text showing the current gamma correction.
+ * Updates the text showing the current m_gamma correction.
  */
 void TonicTones::updateGamma(int value)
 {
-    gamma = float(value)/100.0;
-    gammaValue->setText(QString("%1").arg(gamma, 0, 'f', 2));
+    m_gamma = float(value)/100.0;
+    gammaValue->setText(QString("%1").arg(m_gamma, 0, 'f', 2));
 }
 
 /**
@@ -318,20 +318,20 @@ void TonicTones::updateGamma(int value)
  */
 void TonicTones::enableOperator(bool enabled)
 {
-    operatorEnabled = enabled;
+    m_operatorEnabled = enabled;
     operatorOptionsGroupBox->setEnabled(enabled);
     updateImage();
 }
 
 /**
- * Enable or disables gamma correction.
+ * Enable or disables m_gamma correction.
  * 
- * This function is typically called when the gamma check box is clicked. It also
+ * This function is typically called when the m_gamma check box is clicked. It also
  * calls displayImage().
  */
 void TonicTones::enableGamma(bool enabled)
 {
-    gammaEnabled = enabled;
+    m_gammaEnabled = enabled;
     displayImage();
 }
 
@@ -348,7 +348,7 @@ void TonicTones::openScreenColorsDialog()
     QMatrix4x4 m;
     for (int i=0; i<3; ++i)
         for(int j=0; j<3; ++j)
-            m(i,j) = xyzToRgbMatrix[i][j];
+            m(i,j) = m_xyzToRgbMatrix[i][j];
     m = m.inverted();
     // set ui spin boxes values
     uiScreenColors.m00->setValue(m(0,0)); uiScreenColors.m01->setValue(m(0,1)); uiScreenColors.m02->setValue(m(0,2));
@@ -374,7 +374,7 @@ void TonicTones::updateScreenColors()
                               0.0,             0.0,             0.0            , 1.0).inverted();
     for (int i=0; i<3; ++i)
         for(int j=0; j<3; ++j)
-            xyzToRgbMatrix[i][j] = m(i,j);
+            m_xyzToRgbMatrix[i][j] = m(i,j);
             
     updateImage();
 }
