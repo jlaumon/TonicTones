@@ -43,9 +43,9 @@ ReinhardGlobalOperator::ReinhardGlobalOperator() :
     inputImage(NULL),
     outputImage(NULL),
     avLum(0.0),
-    keyValue(0.18),
+    keyValue(0.18f),
     burnOut(false),
-    lumWhite2(1.0)
+    lumWhite2(1.0f)
 {
     
 }

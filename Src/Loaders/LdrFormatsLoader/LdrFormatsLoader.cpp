@@ -72,9 +72,9 @@ Color* LdrFormatsLoader::getData()
     int width = size.width();
     int height = size.height();
     
-    float rgbToXyzMatrix  [3][3] = {{0.5141364, 0.3238786,  0.16036376},
-                                    {0.265068,  0.67023428, 0.06409157},
-                                    {0.0241188, 0.1228178,  0.84442666}};
+    float rgbToXyzMatrix  [3][3] = {{0.5141364f, 0.3238786f,  0.16036376f},
+                                    {0.265068f,  0.67023428f, 0.06409157f},
+                                    {0.0241188f, 0.1228178f,  0.84442666f}};
     
     Color* data = new Color[width*height];
     float w;

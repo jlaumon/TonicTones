@@ -4,16 +4,20 @@
 
 TEMPLATE = lib
 CONFIG += plugin
-TARGET = $$qtLibraryTarget(TT_ReinhardLocalOperator)
+TARGET = TT_ReinhardLocalOperator
 DESTDIR = ../../../Operators
 
 linux:LIBS += -lfftw3 -lm
 
 windows {
-  LIBS += ../../../Dependencies/Win32/fftw3/libfftw-3.3.lib \
-          ../../../$$qtLibraryTarget(TT_Api).lib
+  LIBS += ../../../Dependencies/Win32/fftw3/libfftw-3.3.lib 
   INCLUDEPATH += ../../../Dependencies/Win32/fftw3
 }
+
+windows {
+  LIBS += ../../../TT_Api.lib
+}
+
 
 DEPENDPATH += . ../../Api
 INCLUDEPATH += . ../../Api

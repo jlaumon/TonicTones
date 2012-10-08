@@ -4,13 +4,15 @@
 
 TEMPLATE = lib
 CONFIG += plugin
-debug:TARGET = TT_ReinhardGlobalOperatord
-else:TARGET = TT_ReinhardGlobalOperator
+TARGET = TT_ReinhardGlobalOperator
 DESTDIR = ../../../Operators
 
 linux:LIBS += -lm 
-windows:debug:LIBS += ../../../TT_Apid.lib
-windows:else:LIBS += ../../../TT_Api.lib
+PRE_TARGETDEPS += TT_Api
+
+windows {
+  LIBS += ../../../TT_Api.lib
+}
 
 DEPENDPATH += . ../../Api
 INCLUDEPATH += . ../../Api

@@ -26,6 +26,7 @@ windows {
   QMAKE_CXXFLAGS_DEBUG = $$replace(QMAKE_CXXFLAGS_DEBUG, -MDd, -MD)
 }
 
+
 DEPENDPATH += . 
 INCLUDEPATH += . ../.. ../../Api
 
