@@ -1,0 +1,52 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TT_Api", "D:/Workspace/ToneMapping/Src/Api\TT_Api.vcxproj", "{AD565B37-3E14-3A72-81B2-B3D0B2D64FB8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TonicTones", "D:/Workspace/ToneMapping/Src\TonicTones.vcxproj", "{7022AB28-F657-3B0F-A3AD-7AD364FD4153}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TT_OpenExrLoader", "D:/Workspace/ToneMapping/Src/Loaders/OpenExrLoader\TT_OpenExrLoader.vcxproj", "{AE0AAD2B-2499-364A-9BAC-0F58269DCDED}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TT_LdrFormatsLoader", "D:/Workspace/ToneMapping/Src/Loaders/LdrFormatsLoader\TT_LdrFormatsLoader.vcxproj", "{AA77FC56-D1F2-3CF1-BA0A-E155C978ACEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TT_ReinhardGlobalOperator", "D:/Workspace/ToneMapping/Src/Operators/ReinhardGlobalOperator\TT_ReinhardGlobalOperator.vcxproj", "{A52FDF62-8B1B-37E8-86EC-CB750E04DF1A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TT_ReinhardLocalOperator", "D:/Workspace/ToneMapping/Src/Operators/ReinhardLocalOperator\TT_ReinhardLocalOperator.vcxproj", "{C5397E9E-3C38-36C5-9186-E40C63287FC2}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug|Win32
+		ConfigName.1 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{AD565B37-3E14-3A72-81B2-B3D0B2D64FB8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AD565B37-3E14-3A72-81B2-B3D0B2D64FB8}.Debug|Win32.Build.0 = Debug|Win32
+		{AD565B37-3E14-3A72-81B2-B3D0B2D64FB8}.Release|Win32.ActiveCfg = Release|Win32
+		{AD565B37-3E14-3A72-81B2-B3D0B2D64FB8}.Release|Win32.Build.0 = Release|Win32
+		{7022AB28-F657-3B0F-A3AD-7AD364FD4153}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7022AB28-F657-3B0F-A3AD-7AD364FD4153}.Debug|Win32.Build.0 = Debug|Win32
+		{7022AB28-F657-3B0F-A3AD-7AD364FD4153}.Release|Win32.ActiveCfg = Release|Win32
+		{7022AB28-F657-3B0F-A3AD-7AD364FD4153}.Release|Win32.Build.0 = Release|Win32
+		{AE0AAD2B-2499-364A-9BAC-0F58269DCDED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AE0AAD2B-2499-364A-9BAC-0F58269DCDED}.Debug|Win32.Build.0 = Debug|Win32
+		{AE0AAD2B-2499-364A-9BAC-0F58269DCDED}.Release|Win32.ActiveCfg = Release|Win32
+		{AE0AAD2B-2499-364A-9BAC-0F58269DCDED}.Release|Win32.Build.0 = Release|Win32
+		{AA77FC56-D1F2-3CF1-BA0A-E155C978ACEF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AA77FC56-D1F2-3CF1-BA0A-E155C978ACEF}.Debug|Win32.Build.0 = Debug|Win32
+		{AA77FC56-D1F2-3CF1-BA0A-E155C978ACEF}.Release|Win32.ActiveCfg = Release|Win32
+		{AA77FC56-D1F2-3CF1-BA0A-E155C978ACEF}.Release|Win32.Build.0 = Release|Win32
+		{A52FDF62-8B1B-37E8-86EC-CB750E04DF1A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A52FDF62-8B1B-37E8-86EC-CB750E04DF1A}.Debug|Win32.Build.0 = Debug|Win32
+		{A52FDF62-8B1B-37E8-86EC-CB750E04DF1A}.Release|Win32.ActiveCfg = Release|Win32
+		{A52FDF62-8B1B-37E8-86EC-CB750E04DF1A}.Release|Win32.Build.0 = Release|Win32
+		{C5397E9E-3C38-36C5-9186-E40C63287FC2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C5397E9E-3C38-36C5-9186-E40C63287FC2}.Debug|Win32.Build.0 = Debug|Win32
+		{C5397E9E-3C38-36C5-9186-E40C63287FC2}.Release|Win32.ActiveCfg = Release|Win32
+		{C5397E9E-3C38-36C5-9186-E40C63287FC2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
