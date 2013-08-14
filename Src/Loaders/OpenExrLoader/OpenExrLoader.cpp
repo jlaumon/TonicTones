@@ -79,17 +79,17 @@ bool OpenExrLoader::openFile()
  */
 QSize OpenExrLoader::getSize()
 {
-    //try
-    //{
-    //    dw = file->header().dataWindow();
-    //    width = dw.max.x - dw.min.x + 1;
-    //    height = dw.max.y - dw.min.y + 1;
-    //    return QSize(width,height);
-    //}
-    //catch(const std::exception&)
-    //{
-        return QSize(0,0);
-    //}
+	try
+	{
+		dw = file->header().dataWindow();
+		width = dw.max.x - dw.min.x + 1;
+		height = dw.max.y - dw.min.y + 1;
+		return QSize(width,height);
+	}
+	catch(const std::exception&)
+	{
+		return QSize(0,0);
+	}
 }
 
 /**
@@ -97,37 +97,36 @@ QSize OpenExrLoader::getSize()
  */
 Color* OpenExrLoader::getData()
 {
-    //Imf::Array2D<Imf::Rgba> pixels;
-    //    
-    //pixels.resizeErase (height, width);
-    //file->setFrameBuffer (&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-    //file->readPixels (dw.min.y, dw.max.y);
+    Imf::Array2D<Imf::Rgba> pixels;
+        
+    pixels.resizeErase (height, width);
+    file->setFrameBuffer (&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
+    file->readPixels (dw.min.y, dw.max.y);
 
-    //Imf::Chromaticities cr; // has default values
+    Imf::Chromaticities cr; // has default values
 
-    //if (Imf::hasChromaticities(file->header()))
-    //    cr = chromaticities(file->header());
-    //    
-    //Imath::M44f m = Imf::RGBtoXYZ(cr, 1);
-    //
-    //Color* data = new Color[width*height];
-    //float w;
-    //for (int i=0; i<height; ++i)
-    //    for (int j=0; j<width; ++j)
-    //    {
-    //        Imath::V3f xyz = Imath::V3f (pixels[i][j].r, pixels[i][j].g, pixels[i][j].b) * m;
+    if (Imf::hasChromaticities(file->header()))
+        cr = chromaticities(file->header());
+        
+    Imath::M44f m = Imf::RGBtoXYZ(cr, 1);
+    
+    Color* data = new Color[width*height];
+    float w;
+    for (int i=0; i<height; ++i)
+        for (int j=0; j<width; ++j)
+        {
+            Imath::V3f xyz = Imath::V3f (pixels[i][j].r, pixels[i][j].g, pixels[i][j].b) * m;
 
-    //        if((w = xyz[0] + xyz[1] + xyz[2]) > 0.0)
-    //            data[i*width + j] = Color(xyz[1],     // Y
-    //                                      xyz[0]/w,   // x
-    //                                      xyz[1]/w);  // y
-    //        else
-    //            data[i*width + j] = Color(0.0,0.0,0.0);
+            if((w = xyz[0] + xyz[1] + xyz[2]) > 0.0)
+                data[i*width + j] = Color(xyz[1],     // Y
+                                          xyz[0]/w,   // x
+                                          xyz[1]/w);  // y
+            else
+                data[i*width + j] = Color(0.0,0.0,0.0);
 
-    //    }
+        }
 
-    //return data;
-	return NULL;
+    return data;
 }
 
 /**

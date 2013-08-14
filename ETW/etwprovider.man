@@ -49,8 +49,8 @@ allow arbitrary changes to be made.
           guid="{231CF54B-22A0-49E4-A59A-47052A30FFED}"
           name="Multi-Main"
           symbol="MULTI_MAIN"
-          messageFileName="%temp%\TonicTones.exe"
-          resourceFileName="%temp%\TonicTones.exe" >
+          messageFileName="%temp%\TT_Api.dll"
+          resourceFileName="%temp%\TT_Api.dll" >
         <templates>
           <template tid="T_Start">
             <data inType="win:AnsiString" name="Description" />
