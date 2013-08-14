@@ -7,7 +7,7 @@ CONFIG += shared
 TARGET = TT_Api
 DESTDIR = ../..
 DEPENDPATH += .
-INCLUDEPATH += .
+INCLUDEPATH += . ../../ETW
 
 DEFINES += TONICTONES_EXPORT
 
@@ -21,6 +21,7 @@ HEADERS += Exports.h \
            ImageLoaderManager.h \
            ToneMappingOperatorManager.h \
            ToneMappingOperator.h \
+		   ../../ETW/etwprof.h
            
            
 SOURCES += Color.cpp \
@@ -28,4 +29,4 @@ SOURCES += Color.cpp \
            HdrImage.cpp \
            ImageLoaderManager.cpp \
            ToneMappingOperatorManager.cpp \
-           
+           ../../ETW/etwprof.cpp

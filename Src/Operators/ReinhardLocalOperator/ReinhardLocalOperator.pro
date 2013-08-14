@@ -20,7 +20,7 @@ windows {
 
 
 DEPENDPATH += . ../../Api
-INCLUDEPATH += . ../../Api
+INCLUDEPATH += . ../../Api ../../../ETW
 
 # Input
 HEADERS += ReinhardLocalOperator.h \

@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = TonicTones
 
 DEPENDPATH += . Api
-INCLUDEPATH += . Api
+INCLUDEPATH += . Api ../ETW
 DESTDIR = ..
 
 linux {

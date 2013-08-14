@@ -15,7 +15,7 @@ windows {
 }
 
 DEPENDPATH += . ../../Api
-INCLUDEPATH += . ../../Api
+INCLUDEPATH += . ../../Api ../../../ETW
 
 # Input
 HEADERS += ReinhardGlobalOperator.h \

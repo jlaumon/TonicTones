@@ -12,7 +12,7 @@ windows {
 }
 
 DEPENDPATH += . 
-INCLUDEPATH += . ../.. ../../Api
+INCLUDEPATH += . ../.. ../../Api ../../../ETW
 
 # Input
 HEADERS += LdrFormatsLoader.h

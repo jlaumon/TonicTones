@@ -22,6 +22,7 @@
 #include <TonicTones.h>
 #include <Exceptions.h>
 #include <iostream>
+#include <etwprof.h>
 
 /**
  * \mainpage
@@ -155,6 +156,8 @@ TonicTones::TonicTones(QWidget *parent) :
  */
 void TonicTones::open()
 {
+	CETWScope mainScope("TonicTones::open");
+
     QString fileName = QFileDialog::getOpenFileName(this);
     
     try

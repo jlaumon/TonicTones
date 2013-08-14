@@ -6,7 +6,9 @@
 //
 //===============================================================================
 
-#include "stdafx.h"
+//#include "stdafx.h"
+#include <stdio.h>
+#include <tchar.h>
 #include "etwprof.h"
 
 #ifdef	ETW_MARKS_ENABLED

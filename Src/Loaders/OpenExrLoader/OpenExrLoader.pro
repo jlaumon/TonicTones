@@ -13,22 +13,29 @@ linux {
 }
 
 windows {
-  LIBS += ../../../Dependencies/Win32/OpenEXR/Half.lib \
-          ../../../Dependencies/Win32/OpenEXR/Iex.lib \
-		  ../../../Dependencies/Win32/OpenEXR/IlmImf.lib \
-          ../../../Dependencies/Win32/OpenEXR/IlmThread.lib \
-		  ../../../Dependencies/Win32/OpenEXR/Imath.lib \
-		  ../../../Dependencies/Win32/OpenEXR/zlib1.lib
+  QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$TARGET.pdb) $$quote($$DESTDIR)
+  CONFIG(debug, debug|release) {
+    LIBS += ../../../Dependencies/Win32/OpenEXR/lib/Debug/Half.lib \
+            ../../../Dependencies/Win32/OpenEXR/lib/Debug/Iex.lib \
+		    ../../../Dependencies/Win32/OpenEXR/lib/Debug/IlmImf.lib \
+            ../../../Dependencies/Win32/OpenEXR/lib/Debug/IlmThread.lib \
+		    ../../../Dependencies/Win32/OpenEXR/lib/Debug/Imath.lib \
+		    ../../../Dependencies/Win32/OpenEXR/lib/Debug/zlib1.lib
+  } else {
+    LIBS += ../../../Dependencies/Win32/OpenEXR/lib/Release/Half.lib \
+            ../../../Dependencies/Win32/OpenEXR/lib/Release/Iex.lib \
+		    ../../../Dependencies/Win32/OpenEXR/lib/Release/IlmImf.lib \
+            ../../../Dependencies/Win32/OpenEXR/lib/Release/IlmThread.lib \
+		    ../../../Dependencies/Win32/OpenEXR/lib/Release/Imath.lib \
+		    ../../../Dependencies/Win32/OpenEXR/lib/Release/zlib1.lib
+  }
   LIBS += ../../../TT_Api.lib
-  INCLUDEPATH += ../../../Dependencies/Win32/OpenEXR
-  
-  # use windows release runtime library in debug because we link openexr release stuff
-  QMAKE_CXXFLAGS_DEBUG = $$replace(QMAKE_CXXFLAGS_DEBUG, -MDd, -MD)
+  INCLUDEPATH += ../../../Dependencies/Win32/OpenEXR/include/OpenEXR
 }
 
 
 DEPENDPATH += . 
-INCLUDEPATH += . ../.. ../../Api
+INCLUDEPATH += . ../.. ../../Api ../../../ETW
 
 # Input
 HEADERS += OpenExrLoader.h

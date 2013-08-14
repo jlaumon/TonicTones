@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'ScreenColorsDialog.ui'
 **
-** Created: Sun 26. May 15:32:48 2013
+** Created: Tue 13. Aug 20:06:34 2013
 **      by: Qt User Interface Compiler version 4.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

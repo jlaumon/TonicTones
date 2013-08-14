@@ -16,6 +16,7 @@
 #pragma once
 #endif
 
+#include <QtGui>
 #include "Exports.h"
 
 typedef long long int64;

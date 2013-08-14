@@ -33,8 +33,6 @@ public:
     
     virtual const QString& qWhat() const throw();
     
-    virtual const char* what() const throw();
-    
 private:
     QString msg;
 };

@@ -26,7 +26,8 @@
  */
 
 Exception::Exception(const QString &m) throw()
-: msg(m)
+: std::exception(m.toStdString().c_str())
+, msg(m)
 {
  
 }
@@ -40,8 +41,3 @@ const QString& Exception::qWhat() const throw()
 {
     return msg;
 }
-
-const char* Exception::what() const throw()
-{
-    return msg.toStdString().c_str();
-}    
