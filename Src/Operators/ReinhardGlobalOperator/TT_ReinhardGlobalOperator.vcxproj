@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>"..\..\..\..\qt\include\QtCore";"..\..\..\..\qt\include\QtGui";"..\..\..\..\qt\include";".";"..\..\Api";"..\..\..\..\qt\include\ActiveQt";"debug";".";..\..\..\..\qt\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\..\..\..\qt\include\QtCore";"..\..\..\..\qt\include\QtGui";"..\..\..\..\qt\include";".";"..\..\Api";"..\..\..\ETW";"..\..\..\..\qt\include\ActiveQt";"debug";".";..\..\..\..\qt\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm200 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -94,7 +94,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>"..\..\..\..\qt\include\QtCore";"..\..\..\..\qt\include\QtGui";"..\..\..\..\qt\include";".";"..\..\Api";"..\..\..\..\qt\include\ActiveQt";"release";".";..\..\..\..\qt\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\..\..\..\qt\include\QtCore";"..\..\..\..\qt\include\QtGui";"..\..\..\..\qt\include";".";"..\..\Api";"..\..\..\ETW";"..\..\..\..\qt\include\ActiveQt";"release";".";..\..\..\..\qt\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm200 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -110,13 +110,12 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>../../../TT_Api.lib;d:\Workspace\qt\lib\QtGui4.lib;d:\Workspace\qt\lib\QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>d:\Workspace\qt\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention>true</DataExecutionPrevention>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
       <LinkDLL>true</LinkDLL>
       <LinkIncremental>false</LinkIncremental>
@@ -139,21 +138,21 @@
   <ItemGroup>
     <CustomBuild Include="ReinhardGlobalOperator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Workspace\qt\bin\moc.exe;ReinhardGlobalOperator.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\..\qt\include\ActiveQt" -I"debug" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ReinhardGlobalOperator.h -o debug\moc_ReinhardGlobalOperator.cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\ETW" -I"..\..\..\..\qt\include\ActiveQt" -I"debug" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ReinhardGlobalOperator.h -o debug\moc_ReinhardGlobalOperator.cpp</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MOC ReinhardGlobalOperator.h</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\moc_ReinhardGlobalOperator.cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Workspace\qt\bin\moc.exe;ReinhardGlobalOperator.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\..\qt\include\ActiveQt" -I"release" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ReinhardGlobalOperator.h -o release\moc_ReinhardGlobalOperator.cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\ETW" -I"..\..\..\..\qt\include\ActiveQt" -I"release" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ReinhardGlobalOperator.h -o release\moc_ReinhardGlobalOperator.cpp</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MOC ReinhardGlobalOperator.h</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\moc_ReinhardGlobalOperator.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\Api\ToneMappingOperator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Api\ToneMappingOperator.h;D:\Workspace\qt\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\..\qt\include\ActiveQt" -I"debug" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ..\..\Api\ToneMappingOperator.h -o debug\moc_ToneMappingOperator.cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\ETW" -I"..\..\..\..\qt\include\ActiveQt" -I"debug" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ..\..\Api\ToneMappingOperator.h -o debug\moc_ToneMappingOperator.cpp</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MOC ..\..\Api\ToneMappingOperator.h</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\moc_ToneMappingOperator.cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Api\ToneMappingOperator.h;D:\Workspace\qt\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\..\qt\include\ActiveQt" -I"release" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ..\..\Api\ToneMappingOperator.h -o release\moc_ToneMappingOperator.cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Workspace\qt\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_PLUGIN -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I"..\..\..\..\qt\include\QtCore" -I"..\..\..\..\qt\include\QtGui" -I"..\..\..\..\qt\include" -I"." -I"..\..\Api" -I"..\..\..\ETW" -I"..\..\..\..\qt\include\ActiveQt" -I"release" -I"." -I..\..\..\..\qt\mkspecs\default -D_MSC_VER=1600 -DWIN32 ..\..\Api\ToneMappingOperator.h -o release\moc_ToneMappingOperator.cpp</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MOC ..\..\Api\ToneMappingOperator.h</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\moc_ToneMappingOperator.cpp;%(Outputs)</Outputs>
     </CustomBuild>
