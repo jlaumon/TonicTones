@@ -172,13 +172,14 @@ void TonicTones::open(const QString& fileName)
 {
     try
     {
-#if PROFILING_LOOP_COUNT > 0
-		for (int profLoop=0; profLoop < PROFILING_LOOP_COUNT; ++profLoop)
-#endif
+		if (!fileName.isEmpty())
 		{
-			PROFILE_FUNC();
-			if (!fileName.isEmpty())
+#if PROFILING_LOOP_COUNT > 0
+			for (int profLoop=0; profLoop < PROFILING_LOOP_COUNT; ++profLoop)
+#endif
 			{
+				PROFILE_FUNC();
+			
 				HdrImage* newImage = new HdrImage(fileName); // may throw an exception
 				delete m_inputImage;
 				m_inputImage = newImage;
@@ -200,19 +201,28 @@ void TonicTones::open(const QString& fileName)
                 
 				m_scrollArea->scaleImage(1.0, false); // set zoom 100%
 			}
+
+#ifdef PROFILING_ENABLED
+			Profiler::instance()->display();
+			QDir profDir("Profiling");
+			profDir.mkpath(".");
+			QString baseName = QFileInfo(fileName).completeBaseName();
+			QString currDate = QDateTime::currentDateTime().toString("yyMMddhhmmss");
+			Profiler::instance()->writeCSV(QString(
+				profDir.path() 
+				+ QDir::separator()
+				+ baseName 
+				+ OPTIM_VERSION 
+				+ currDate 
+				+ ".csv").toStdString().c_str());
+			Profiler::instance()->reset();
+#endif
 		}
     }
     catch(const Exception& e)
     {
         qWarning() << e.what();
     }
-
-#ifdef PROFILING_ENABLED
-	Profiler::instance()->display();
-	QString baseName = QFileInfo(fileName).completeBaseName();
-	QString currDate = QDateTime::currentDateTime().toString("yyMMddhhmmss");
-	Profiler::instance()->writeCSV(QString("Prof/" + baseName + OPTIM_VERSION + currDate + ".csv").toStdString().c_str());
-#endif
 }
 
 /**

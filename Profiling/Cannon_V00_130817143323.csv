@@ -1,0 +1,8 @@
+"Session Name";"Average Time (ms)";"Min Time (ms)";"Max Time (ms)";"Number of Runs"
+"OpenExrLoader::openFile";0.73;0.54;1.06;20
+"OpenExrLoader::getData";34.55;32.60;41.56;20
+"ReinhardGlobalOperator::setImag";19.51;16.93;21.90;20
+"ReinhardGlobalOperator::toneMap";7.90;6.57;10.37;20
+"HdrImage::fromYxyToRgb";13.45;11.72;15.45;20
+"TonicTones::displayImage";10.70;9.63;12.73;20
+"TonicTones::open";89.61;80.93;100.79;20
