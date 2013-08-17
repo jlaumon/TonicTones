@@ -21,6 +21,7 @@
 #include <ReinhardGlobalOperator.h>
 #include <Exceptions.h>
 #include <math.h>
+#include <Profiler.h>
 
 #define OPERATOR_NAME "Reinhard Global Operator"
 
@@ -81,37 +82,40 @@ const HdrImage* ReinhardGlobalOperator::getToneMappedImage() const
  */
 void ReinhardGlobalOperator::setImage(const HdrImage* image)
 {
-    if (!image->hasY())
+	if (!image->hasY())
         throw Exception(tr("Image passed to %1 does not contains Y data. Cannot turn water into wine.").arg(name()));
     
     QTime t;
     t.start();
     
-    inputImage = image;
-    QSize size = inputImage->size();
-    delete outputImage;
-    outputImage = new HdrImage(*inputImage);
-    const double delta = 0.0001;
+	{
+		PROFILE_FUNC();
+
+		inputImage = image;
+		QSize size = inputImage->size();
+		delete outputImage;
+		outputImage = new HdrImage(*inputImage);
+		const double delta = 0.0001;
     
-    float lumMax = 0.0;
-    int Y = inputImage->YIndex();
-    avLum = 0.0;
-    for(int i=0; i<size.height(); ++i)
-        for(int j=0; j<size.width(); ++j)
-        {
-            double lum = qMax(double((*inputImage)[i][j][Y]),0.0);
-            avLum += log(delta + lum);
-            lumMax = qMax(lumMax,float(lum));
-        }
-    avLum = exp(avLum/(double)(size.width()*size.height()));
+		float lumMax = 0.0;
+		int Y = inputImage->YIndex();
+		avLum = 0.0;
+		for(int i=0; i<size.height(); ++i)
+			for(int j=0; j<size.width(); ++j)
+			{
+				double lum = qMax(double((*inputImage)[i][j][Y]),0.0);
+				avLum += log(delta + lum);
+				lumMax = qMax(lumMax,float(lum));
+			}
+		avLum = exp(avLum/(double)(size.width()*size.height()));
     
-    ui.whiteValueSpinBox->setMaximum(qMin(lumMax,float(1e19)));
-    ui.whiteValueSpinBox->setValue(qMin(lumMax,float(1e19)));
-    ui.keyValueSlider->setValue(18); // = 0.18
-    ui.burnOutGroupBox->setChecked(false);
+		ui.whiteValueSpinBox->setMaximum(qMin(lumMax,float(1e19)));
+		ui.whiteValueSpinBox->setValue(qMin(lumMax,float(1e19)));
+		ui.keyValueSlider->setValue(18); // = 0.18
+		ui.burnOutGroupBox->setChecked(false);
     
-    msg = tr("Operator Init: %1 ms").arg(t.elapsed());
-    
+		msg = tr("Operator Init: %1 ms").arg(t.elapsed());
+	}
     toneMap();
 }
 
@@ -122,35 +126,38 @@ void ReinhardGlobalOperator::setImage(const HdrImage* image)
  */
 void ReinhardGlobalOperator::toneMap()
 {
-    if (inputImage)
+	if (inputImage)
     {
-        QTime t;
+		QTime t;
         t.start();
         
-        QSize size = inputImage->size();
-        int width = size.width();
-        int height = size.height();
-        int Y = inputImage->YIndex();
-        
-        if(burnOut)
-            for(int i=0; i<height; ++i)
-                for(int j=0; j<width; ++j)
-                {
-                    float lum = (*inputImage)[i][j][Y];
-                    lum = keyValue*lum/avLum;
-                    (*outputImage)[i][j][Y] = lum*(1.0+(lum/lumWhite2))/(1.0+lum);
+		{
+			PROFILE_FUNC();
 
-                }
-        else
-            for(int i=0; i<height; ++i)
-                for(int j=0; j<width; ++j)
-                {
-                    float lum = (*inputImage)[i][j][Y];
-                    lum = keyValue*lum/avLum;
-                    (*outputImage)[i][j][Y] = lum/(1.0+lum);
+			QSize size = inputImage->size();
+			int width = size.width();
+			int height = size.height();
+			int Y = inputImage->YIndex();
 
-                }
-        
+			if(burnOut)
+				for(int i=0; i<height; ++i)
+					for(int j=0; j<width; ++j)
+					{
+						float lum = (*inputImage)[i][j][Y];
+						lum = keyValue*lum/avLum;
+						(*outputImage)[i][j][Y] = lum*(1.0+(lum/lumWhite2))/(1.0+lum);
+
+					}
+			else
+				for(int i=0; i<height; ++i)
+					for(int j=0; j<width; ++j)
+					{
+						float lum = (*inputImage)[i][j][Y];
+						lum = keyValue*lum/avLum;
+						(*outputImage)[i][j][Y] = lum/(1.0+lum);
+
+					}
+		}
         emit message(msg + tr("  Tone Mapping: %1 ms").arg(t.elapsed()));
                 
         emit imageUpdated();

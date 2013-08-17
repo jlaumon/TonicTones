@@ -137,6 +137,7 @@
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="HdrImage.cpp" />
     <ClCompile Include="ImageLoaderManager.cpp" />
+    <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="ToneMappingOperatorManager.cpp" />
     <ClCompile Include="..\..\ETW\etwprof.cpp" />
   </ItemGroup>
@@ -145,6 +146,8 @@
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Exports.h" />
     <ClInclude Include="HdrImage.h" />
+    <ClInclude Include="PrecisionTimer.h" />
+    <ClInclude Include="Profiler.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="ImageLoaderManager.h" />
     <ClInclude Include="Singleton.h" />
@@ -180,6 +183,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename)Generated.h;%(Filename)Generated.rc</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalInputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,7 @@
 #include <Exceptions.h>
 #include <iostream>
 #include <etwprof.h>
+#include <Profiler.h>
 
 /**
  * \mainpage
@@ -156,40 +157,62 @@ TonicTones::TonicTones(QWidget *parent) :
  */
 void TonicTones::open()
 {
-	CETWScope mainScope("TonicTones::open");
-
     QString fileName = QFileDialog::getOpenFileName(this);
-    
+
+	open(fileName);
+}
+
+#ifdef PROFILING_ENABLED
+#define PROFILING_LOOP_COUNT 20
+#endif
+
+#define OPTIM_VERSION "_V00_"
+
+void TonicTones::open(const QString& fileName)
+{
     try
     {
-        if (!fileName.isEmpty())
-        {
-            HdrImage* newImage = new HdrImage(fileName); // may throw an exception
-            delete m_inputImage;
-            m_inputImage = newImage;
+#if PROFILING_LOOP_COUNT > 0
+		for (int profLoop=0; profLoop < PROFILING_LOOP_COUNT; ++profLoop)
+#endif
+		{
+			PROFILE_FUNC();
+			if (!fileName.isEmpty())
+			{
+				HdrImage* newImage = new HdrImage(fileName); // may throw an exception
+				delete m_inputImage;
+				m_inputImage = newImage;
 
-			delete m_pixmapBuffer;
-			m_pixmapBuffer = new int[m_inputImage->size().width() * m_inputImage->size().height()];
+				delete m_pixmapBuffer;
+				m_pixmapBuffer = new int[m_inputImage->size().width() * m_inputImage->size().height()];
             
-            if(m_operatorManager.getActiveOperator())
-            {
-                m_operatorManager.getActiveOperator()->setImage(m_inputImage);
-            }
-            else
-            {
-                m_operatorEnabled = false;
-                updateImage();
-            }
+				if(m_operatorManager.getActiveOperator())
+				{
+					m_operatorManager.getActiveOperator()->setImage(m_inputImage);
+				}
+				else
+				{
+					m_operatorEnabled = false;
+					updateImage();
+				}
             
-            setWindowTitle(QString("TonicTones - %1").arg(QDir(fileName).dirName()));
+				setWindowTitle(QString("TonicTones - %1").arg(QDir(fileName).dirName()));
                 
-            m_scrollArea->scaleImage(1.0, false); // set zoom 100%
-        }
+				m_scrollArea->scaleImage(1.0, false); // set zoom 100%
+			}
+		}
     }
     catch(const Exception& e)
     {
         qWarning() << e.what();
     }
+
+#ifdef PROFILING_ENABLED
+	Profiler::instance()->display();
+	QString baseName = QFileInfo(fileName).completeBaseName();
+	QString currDate = QDateTime::currentDateTime().toString("yyMMddhhmmss");
+	Profiler::instance()->writeCSV(QString("Prof/" + baseName + OPTIM_VERSION + currDate + ".csv").toStdString().c_str());
+#endif
 }
 
 /**
@@ -239,6 +262,8 @@ void TonicTones::displayImage() const
         
         if(m_gammaEnabled && m_gamma!=1.0)
         {
+			PROFILE("TonicTones::displayImage - Gamma correction");
+
             double gamma_corr = 1.0/m_gamma;
             for(int i=0; i<height; ++i)
                 for(int j=0; j<width; ++j)
@@ -249,6 +274,8 @@ void TonicTones::displayImage() const
         }
         else
         {
+			PROFILE_FUNC();
+
             for(int i=0; i<height; ++i)
                 for(int j=0; j<width; ++j)
                 {

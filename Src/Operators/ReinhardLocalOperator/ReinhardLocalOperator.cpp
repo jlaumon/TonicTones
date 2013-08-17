@@ -21,6 +21,7 @@
 #include <ReinhardLocalOperator.h>
 #include <Exceptions.h>
 #include <math.h>
+#include <Profiler.h>
 
 #define OPERATOR_NAME "Reinhard Local Operator"
 
@@ -58,7 +59,8 @@ ReinhardLocalOperator::~ReinhardLocalOperator()
 {
     for(int k=0; k<9; ++k)
     {
-        delete[] responses[k];
+		if (responses[k])
+			fftw_free(responses[k]);
     }
 }
 
@@ -107,146 +109,151 @@ void ReinhardLocalOperator::setImage(const HdrImage* _inputImage)
     QTime t;
     t.start();
     
-    inputImage = _inputImage;
-    QSize size = inputImage->size();
-    width = size.width();
-    height = size.height();
-    int Y = inputImage->YIndex();
-    int length =  width*height;
-    double delta = 0.0001;
-    fftw_plan plan;
-    fftw_complex* image = NULL;
-    fftw_complex* filters[9] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-    
-    delete outputImage;
-    outputImage = new HdrImage(*inputImage);
-    
-    // calculate average luminance
-    avLum = 0.0;
-    for(int i=0; i<height; ++i)
-        for(int j=0; j<width; ++j)
-        {
-            double lum = qMax(double((*inputImage)[i][j][Y]),0.0);
-            avLum += log(delta + lum);
-        }
-    avLum = exp(avLum/(double)(length));
-    
-    // delete data from potential previous image
-    for(int k=0; k<9; ++k)
-    {
-        delete[] responses[k];
-    }
-    
-    // allocate memory for image fft and filters ffts
-    image = new fftw_complex[length];
-    for(int k=0; k<9; ++k)
-    {
-        filters[k] = new fftw_complex[length];
-        for(int i=0; i<length; ++i)
-        {
-            filters[k][i][0] = 0.0; // re
-            filters[k][i][1] = 0.0; // im
-        }
-    }
+	{
+		PROFILE_FUNC();
 
-    // generate filters data
-    for(int k=0; k<9; ++k)
-    {
-        double s = pow(1.6, k);
-        int rs = int(s+0.5);
-        int maxY = qMin(height/2,rs);
-        int minY = -maxY;
-        int maxX = qMin(width/2,rs);
-        int minX = -maxX;
-        double c = (1./8.) * s * s;
-        double a = 1./(M_PI * c);
-        double sum = 0.0;
-        double gauss = 0.0;
+		inputImage = _inputImage;
+		QSize size = inputImage->size();
+		width = size.width();
+		height = size.height();
+		int Y = inputImage->YIndex();
+		int length =  width*height;
+		double delta = 0.0001;
+		fftw_plan plan;
+		fftw_complex* image = NULL;
+		fftw_complex* filters[9] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+    
+		delete outputImage;
+		outputImage = new HdrImage(*inputImage);
+    
+		// calculate average luminance
+		avLum = 0.0;
+		for(int i=0; i<height; ++i)
+			for(int j=0; j<width; ++j)
+			{
+				double lum = qMax(double((*inputImage)[i][j][Y]),0.0);
+				avLum += log(delta + lum);
+			}
+		avLum = exp(avLum/(double)(length));
+    
+		// delete data from potential previous image
+		for(int k=0; k<9; ++k)
+		{
+			if (responses[k])
+				fftw_free(responses[k]);
+		}
+    
+		// allocate memory for image fft and filters ffts
+		image = new fftw_complex[length];
+		for(int k=0; k<9; ++k)
+		{
+			filters[k] = new fftw_complex[length];
+			for(int i=0; i<length; ++i)
+			{
+				filters[k][i][0] = 0.0; // re
+				filters[k][i][1] = 0.0; // im
+			}
+		}
 
-        for(int y=minY; y<maxY; ++y)
-            for(int x=minX; x<maxX; ++x)
-            {
-                gauss = a * exp(-(x*x + y*y)/c);
-                filters[k][(y + height/2)*width + x + width/2][0] = gauss;
-                sum += gauss;
-            }
+		// generate filters data
+		for(int k=0; k<9; ++k)
+		{
+			double s = pow(1.6, k);
+			int rs = int(s+0.5);
+			int maxY = qMin(height/2,rs);
+			int minY = -maxY;
+			int maxX = qMin(width/2,rs);
+			int minX = -maxX;
+			double c = (1./8.) * s * s;
+			double a = 1./(M_PI * c);
+			double sum = 0.0;
+			double gauss = 0.0;
+
+			for(int y=minY; y<maxY; ++y)
+				for(int x=minX; x<maxX; ++x)
+				{
+					gauss = a * exp(-(x*x + y*y)/c);
+					filters[k][(y + height/2)*width + x + width/2][0] = gauss;
+					sum += gauss;
+				}
         
-        // normalization
-        for(int y=minY; y<maxY; ++y)
-            for(int x=minX; x<maxX; ++x)
-            {
-                filters[k][(y + height/2)*width + x + width/2][0] /= sum;
-            }
-    }
+			// normalization
+			for(int y=minY; y<maxY; ++y)
+				for(int x=minX; x<maxX; ++x)
+				{
+					filters[k][(y + height/2)*width + x + width/2][0] /= sum;
+				}
+		}
     
-    // compute filters ffts
-    for(int k=0; k<9; ++k)
-    {
-        plan = fftw_plan_dft_2d(height, width, filters[k], filters[k], FFTW_FORWARD, FFTW_ESTIMATE);
-        fftw_execute(plan);
+		// compute filters ffts
+		for(int k=0; k<9; ++k)
+		{
+			plan = fftw_plan_dft_2d(height, width, filters[k], filters[k], FFTW_FORWARD, FFTW_ESTIMATE);
+			fftw_execute(plan);
         
-        double scale = 1./sqrt((float)length);
-        for(int i=0; i<length; ++i)
-        {
-            filters[k][i][0] *= scale;
-            filters[k][i][1] *= scale;
-        }
-    }
+			double scale = 1./sqrt((float)length);
+			for(int i=0; i<length; ++i)
+			{
+				filters[k][i][0] *= scale;
+				filters[k][i][1] *= scale;
+			}
+		}
     
-    // copy image data
-    for(int i=0; i<height; ++i)
-    {
-        for(int j=0; j<width; ++j)
-        {
-            image[i*width + j][0] = (*inputImage)[i][j][Y];
-            image[i*width + j][1] = 0.0;
-        }
-    }
+		// copy image data
+		for(int i=0; i<height; ++i)
+		{
+			for(int j=0; j<width; ++j)
+			{
+				image[i*width + j][0] = (*inputImage)[i][j][Y];
+				image[i*width + j][1] = 0.0;
+			}
+		}
         
-    // compute image fft
-    plan = fftw_plan_dft_2d(height, width, image, image, FFTW_FORWARD, FFTW_ESTIMATE);
-    fftw_execute(plan);
-    double scale = 1./sqrt((float)length);
-    for(int i=0; i<length; ++i)
-    {
-        image[i][0] *= scale;
-        image[i][1] *= scale;
-    }
+		// compute image fft
+		plan = fftw_plan_dft_2d(height, width, image, image, FFTW_FORWARD, FFTW_ESTIMATE);
+		fftw_execute(plan);
+		double scale = 1./sqrt((float)length);
+		for(int i=0; i<length; ++i)
+		{
+			image[i][0] *= scale;
+			image[i][1] *= scale;
+		}
     
-    // convolve image and filters
-    for(int k=0; k<9; ++k)
-    {
-        responses[k] = convolveFft(image, filters[k]);
-    }
+		// convolve image and filters
+		for(int k=0; k<9; ++k)
+		{
+			responses[k] = convolveFft(image, filters[k]);
+		}
     
-    // compute responses inverse ffts
-    for(int k=0; k<9; ++k)
-    {
-        plan = fftw_plan_dft_2d(height, width, responses[k], responses[k], FFTW_BACKWARD, FFTW_ESTIMATE);
-        fftw_execute(plan);
+		// compute responses inverse ffts
+		for(int k=0; k<9; ++k)
+		{
+			plan = fftw_plan_dft_2d(height, width, responses[k], responses[k], FFTW_BACKWARD, FFTW_ESTIMATE);
+			fftw_execute(plan);
         
-        for(int i=0; i<height/2; ++i)
-        {
-            for(int j=0; j<width/2; ++j)
-            {
-                double tmp = responses[k][i*width + j][0];
-                responses[k][i*width + j][0] = responses[k][(i+height/2)*width + j+width/2][0];
-                responses[k][(i+height/2)*width + j+width/2][0] = tmp;
+			for(int i=0; i<height/2; ++i)
+			{
+				for(int j=0; j<width/2; ++j)
+				{
+					double tmp = responses[k][i*width + j][0];
+					responses[k][i*width + j][0] = responses[k][(i+height/2)*width + j+width/2][0];
+					responses[k][(i+height/2)*width + j+width/2][0] = tmp;
                 
-                tmp = responses[k][(i+height/2)*width + j][0];
-                responses[k][(i+height/2)*width + j][0] = responses[k][i*width + j+width/2][0];
-                responses[k][i*width + j+width/2][0] = tmp;
-            }
-        }
-    }
+					tmp = responses[k][(i+height/2)*width + j][0];
+					responses[k][(i+height/2)*width + j][0] = responses[k][i*width + j+width/2][0];
+					responses[k][i*width + j+width/2][0] = tmp;
+				}
+			}
+		}
     
-    fftw_destroy_plan(plan);
-    delete[] image;
-    for(int k=0; k<9; ++k)
-        delete[] filters[k];
+		fftw_destroy_plan(plan);
+		delete[] image;
+		for(int k=0; k<9; ++k)
+			delete[] filters[k];
     
-    ui.keyValueSlider->setValue(18); // = 0.18
-    ui.sharpeningSlider->setValue(8); 
+		ui.keyValueSlider->setValue(18); // = 0.18
+		ui.sharpeningSlider->setValue(8); 
+	}
     
     msg = tr("Operator Init: %1 ms").arg(t.elapsed());
     

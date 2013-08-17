@@ -23,6 +23,7 @@
 #include <ImfChromaticities.h>
 #include <ImfStandardAttributes.h>
 #include <ImfRgbaYca.h>
+#include <Profiler.h>
 
 #define tr(s) QObject::tr(s)
 
@@ -62,6 +63,8 @@ void OpenExrLoader::setFileName(const QString& f)
  */
 bool OpenExrLoader::openFile()
 {
+	PROFILE_FUNC();
+
     delete file;
     try
     {
@@ -97,7 +100,9 @@ QSize OpenExrLoader::getSize()
  */
 Color* OpenExrLoader::getData()
 {
-    Imf::Array2D<Imf::Rgba> pixels;
+	PROFILE_FUNC();
+
+	Imf::Array2D<Imf::Rgba> pixels;
         
     pixels.resizeErase (height, width);
     file->setFrameBuffer (&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);

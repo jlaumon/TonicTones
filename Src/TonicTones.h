@@ -47,7 +47,8 @@ public slots:
     void enableGamma(bool enabled);
     
 private:
-
+	void open(const QString& fileName);
+	
     Ui::ScreenColorsDialog uiScreenColors;
     
     ImageScrollArea* m_scrollArea;

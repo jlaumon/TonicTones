@@ -21,6 +21,7 @@
 #include <HdrImage.h>
 #include <ImageLoaderManager.h>
 #include <Exceptions.h>
+#include <Profiler.h>
 
 #define tr(arg) QObject::tr(arg)
 
@@ -132,6 +133,7 @@ HdrImage* HdrImage::toRgb(const float toRgbMatrix[3][3]) const
  */
 HdrImage* HdrImage::fromYxyToRgb(const float matrix[3][3]) const
 {
+	PROFILE_FUNC();
 
     HdrImage* image = new HdrImage;
     image->resize(width, height);

@@ -19,6 +19,7 @@
 
 
 #include <LdrFormatsLoader.h>
+#include <Profiler.h>
 
 #define tr(s) QObject::tr(s)
 
@@ -52,7 +53,9 @@ void LdrFormatsLoader::setFileName(const QString& f)
  */
 bool LdrFormatsLoader::openFile()
 {
-    return image.load(fileName);
+	PROFILE_FUNC();
+
+	return image.load(fileName);
 }
 
 /**
@@ -68,6 +71,8 @@ QSize LdrFormatsLoader::getSize()
  */
 Color* LdrFormatsLoader::getData()
 {
+	PROFILE_FUNC();
+
     QSize size = image.size();
     int width = size.width();
     int height = size.height();

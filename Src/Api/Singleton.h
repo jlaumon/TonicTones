@@ -20,6 +20,10 @@
 #ifndef SINGLETON_H
 #define SINGLETON_H
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 /**
  * \class Singleton
  * \brief A singleton design pattern implementation.
